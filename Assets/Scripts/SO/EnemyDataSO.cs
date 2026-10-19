@@ -1,0 +1,9 @@
+using UnityEngine;
+
+[CreateAssetMenu(menuName = "td/enemy data")]
+public class EnemyDataSO : ScriptableObject
+{
+    public EnemyController prefab;
+    public float maxHp = 5f;
+    public float moveSpeed = 3f;
+}
