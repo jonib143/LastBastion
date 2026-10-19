@@ -6,4 +6,5 @@ public class EnemyDataSO : ScriptableObject
     public EnemyController prefab;
     public float maxHp = 5f;
     public float moveSpeed = 3f;
+    public int goldDrop = 5;
 }

@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyHealth))]
 public class EnemyController : MonoBehaviour
 {
+    // broadcasts gold reward when killed by towers
+    public static event Action<int> OnEnemyKilled;
+
     public EnemyDataSO Data { get; private set; }
     public EnemyHealth Health { get; private set; }
 
@@ -24,7 +27,6 @@ public class EnemyController : MonoBehaviour
         Data = data;
         path = assignedPath;
 
-        // convert move speed into total travel time 
         float pathLength = path.GetLength();
         duration = data.moveSpeed > 0f ? pathLength / data.moveSpeed : 1f;
 
@@ -33,7 +35,8 @@ public class EnemyController : MonoBehaviour
         returnToPool = onDespawn;
         isRunning = true;
 
-        Health.Initialize(data.maxHp, Despawn);
+        // pass handlekilled instead of despawn so leaked enemies don't give gold
+        Health.Initialize(data.maxHp, HandleKilled);
         gameObject.SetActive(true);
     }
 
@@ -73,6 +76,13 @@ public class EnemyController : MonoBehaviour
         {
             stunTimer = stunTime;
         }
+    }
+
+    private void HandleKilled()
+    {
+        if (!isRunning) return;
+        OnEnemyKilled?.Invoke(Data.goldDrop);
+        Despawn();
     }
 
     public void Despawn()
