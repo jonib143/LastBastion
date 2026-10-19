@@ -60,8 +60,8 @@ public class EnemyController : MonoBehaviour
 
         if (t >= 1f)
         {
-            var hpBar = FindFirstObjectByType<PlayerHPBar>();
-            if (hpBar != null) hpBar.TakeDamage(1f);
+            //var hpBar = FindFirstObjectByType<PlayerHPBar>();
+            //if (hpBar != null) hpBar.TakeDamage(1f);
 
             Despawn();
         }
