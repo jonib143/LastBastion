@@ -4,16 +4,18 @@ using UnityEngine;
 [RequireComponent(typeof(EnemyHealth))]
 public class EnemyController : MonoBehaviour
 {
-    // broadcasts gold reward when killed by towers
     public static event Action<int> OnEnemyKilled;
 
     public EnemyDataSO Data { get; private set; }
     public EnemyHealth Health { get; private set; }
+    public float PathProgress { get; private set; }
 
     private CubicPath path;
     private float duration;
     private float elapsed;
     private float stunTimer;
+    private float slowTimer;
+    private float slowMultiplier;
     private Action<EnemyController> returnToPool;
     private bool isRunning;
 
@@ -31,11 +33,13 @@ public class EnemyController : MonoBehaviour
         duration = data.moveSpeed > 0f ? pathLength / data.moveSpeed : 1f;
 
         elapsed = 0f;
+        PathProgress = 0f;
         stunTimer = 0f;
+        slowTimer = 0f;
+        slowMultiplier = 0f;
         returnToPool = onDespawn;
         isRunning = true;
 
-        // pass handlekilled instead of despawn so leaked enemies don't give gold
         Health.Initialize(data.maxHp, HandleKilled);
         gameObject.SetActive(true);
     }
@@ -50,18 +54,26 @@ public class EnemyController : MonoBehaviour
             return;
         }
 
-        elapsed += Time.deltaTime;
-        float t = Mathf.Clamp01(elapsed / duration);
+        float speedFactor = 1f;
+        if (slowTimer > 0f)
+        {
+            slowTimer -= Time.deltaTime;
+            speedFactor = 1f - slowMultiplier;
+        }
 
-        transform.position = path.GetPosition(t);
+        // scale delta time instead of changing duration so enemy doesn't jump along the curve
+        elapsed += Time.deltaTime * speedFactor;
+        PathProgress = Mathf.Clamp01(elapsed / duration);
 
-        Vector3 dir = path.GetTangent(t);
+        transform.position = path.GetPosition(PathProgress);
+
+        Vector3 dir = path.GetTangent(PathProgress);
         if (dir != Vector3.zero)
         {
             transform.up = dir;
         }
 
-        if (t >= 1f)
+        if (PathProgress >= 1f)
         {
             //var hpBar = FindFirstObjectByType<PlayerHPBar>();
             //if (hpBar != null) hpBar.TakeDamage(1f);
@@ -75,6 +87,15 @@ public class EnemyController : MonoBehaviour
         if (stunTime > stunTimer)
         {
             stunTimer = stunTime;
+        }
+    }
+
+    public void ApplySlow(float percent, float duration)
+    {
+        slowMultiplier = Mathf.Clamp(percent, 0f, 0.9f);
+        if (duration > slowTimer)
+        {
+            slowTimer = duration;
         }
     }
 
