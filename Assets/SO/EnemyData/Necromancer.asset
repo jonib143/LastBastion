@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77e117569d347084cb34d43b8dc2498d, type: 3}
+  m_Name: Necromancer
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
+  prefab: {fileID: 8602658539746616485, guid: aa04377ef1cee184db035154d2d21c8b, type: 3}
+  maxHp: 40
+  moveSpeed: 1
+  goldDrop: 15

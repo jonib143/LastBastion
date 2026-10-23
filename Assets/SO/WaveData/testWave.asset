@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: testWave
   m_EditorClassIdentifier: Assembly-CSharp::WaveDataSO
   groups:
-  - enemyData: {fileID: 11400000, guid: 786db9bddbd8a654da0325f063dcb574, type: 2}
+  - enemyData: {fileID: 11400000, guid: 217afb9dfa91dd64495ad57c88f219a8, type: 2}
     count: 20
     spawnInterval: 1
     delayAfterGroup: 0

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77e117569d347084cb34d43b8dc2498d, type: 3}
   m_Name: Slime
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
-  prefab: {fileID: 7920518268556461587, guid: fbc191d6ec3b7e54985fe32e488f3e9b, type: 3}
+  prefab: {fileID: 8185897085544794416, guid: 2f96dfec05f038441b3d8dee2b40d765, type: 3}
   maxHp: 5
   moveSpeed: 3
+  goldDrop: 5
