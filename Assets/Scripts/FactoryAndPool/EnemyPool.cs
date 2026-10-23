@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyPool : MonoBehaviour
 {
+    public static EnemyPool Instance { get; private set; }
+
     [Serializable]
     public struct PoolEntry
     {
@@ -15,14 +17,15 @@ public class EnemyPool : MonoBehaviour
     [SerializeField] private List<PoolEntry> entries;
 
     private readonly Dictionary<EnemyDataSO, Queue<EnemyController>> pools = new();
-
-    // track active enemies so towers and aoe don't need findobjectsbytype
     public List<EnemyController> ActiveEnemies { get; } = new();
 
     void Awake()
     {
-        foreach (var entry in entries)
+        Instance = this;
+
+        for (int i = 0; i < entries.Count; i++)
         {
+            var entry = entries[i];
             if (entry.data == null || entry.data.prefab == null) continue;
 
             if (!pools.ContainsKey(entry.data))
@@ -30,7 +33,7 @@ public class EnemyPool : MonoBehaviour
                 pools[entry.data] = new Queue<EnemyController>();
             }
 
-            for (int i = 0; i < entry.prewarmCount; i++)
+            for (int j = 0; j < entry.prewarmCount; j++)
             {
                 pools[entry.data].Enqueue(CreateInstance(entry.data));
             }

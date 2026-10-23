@@ -7,6 +7,7 @@ public class ProjectileDataSO : ScriptableObject
     public Projectile prefab;
     public float speed = 8f;
     public float lifetime = 3f;
+    public bool isHoming = false;
 
     [Header("hit detection")]
     public float hitRadius = 0.4f;

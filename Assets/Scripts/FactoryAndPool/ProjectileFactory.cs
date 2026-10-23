@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class ProjectileFactory : MonoBehaviour
 {
+    public static ProjectileFactory Instance { get; private set; }
+
     [SerializeField] private ProjectilePool projectilePool;
-    [SerializeField] private EnemyPool enemyPool;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     public Projectile Spawn(
         ProjectileDataSO data,
@@ -18,7 +24,7 @@ public class ProjectileFactory : MonoBehaviour
         if (bullet == null) return null;
 
         bullet.transform.position = spawnPos;
-        bullet.Setup(data, direction, towerDamage, effects, target, enemyPool, projectilePool.Release);
+        bullet.Setup(data, direction, towerDamage, effects, target, EnemyPool.Instance, projectilePool.Release);
         return bullet;
     }
 }

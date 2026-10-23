@@ -33,6 +33,8 @@ public class Projectile : MonoBehaviour
         returnToPool = onDespawn;
         lifeTimer = 0f;
         isRunning = true;
+
+        RotateTowardsMoveDir();
         gameObject.SetActive(true);
     }
 
@@ -40,9 +42,17 @@ public class Projectile : MonoBehaviour
     {
         if (!isRunning || Data == null) return;
 
+        bool targetAlive = currentTarget != null && currentTarget.gameObject.activeInHierarchy;
+        
+        if (Data.isHoming && targetAlive)
+        {
+            moveDir = (currentTarget.transform.position - transform.position).normalized;
+            RotateTowardsMoveDir();
+        }
+
         transform.position += moveDir * Data.speed * Time.deltaTime;
 
-        if (currentTarget != null && currentTarget.gameObject.activeInHierarchy)
+        if (targetAlive)
         {
             float dist = (currentTarget.transform.position - transform.position).magnitude;
             if (dist <= Data.hitRadius)
@@ -60,6 +70,13 @@ public class Projectile : MonoBehaviour
         }
     }
 
+    private void RotateTowardsMoveDir()
+    {
+        if (moveDir == Vector3.zero) return;
+        float angle = Mathf.Atan2(moveDir.y, moveDir.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
     private void TriggerHit(Vector3 hitPos)
     {
         if (hitEffects == null || hitEffects.Count == 0) return;
@@ -67,7 +84,6 @@ public class Projectile : MonoBehaviour
         if (Data.splashRadius > 0f && enemyPool != null)
         {
             var active = enemyPool.ActiveEnemies;
-            // loop backwards in case an enemy dies 
             for (int i = active.Count - 1; i >= 0; i--)
             {
                 EnemyController enemy = active[i];

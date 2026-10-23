@@ -6,5 +6,6 @@ public abstract class CardDataSO : ScriptableObject
     public string cardName;
     [TextArea] public string description;
     public Sprite cardArt;
-    public int goldCost;
+
+    public abstract int GoldCost { get; }
 }

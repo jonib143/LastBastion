@@ -4,8 +4,9 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "td/tower data")]
 public class TowerDataSO : ScriptableObject
 {
-    [Header("prefab")]
-    public GameObject towerPrefab;
+    [Header("prefab & economy")]
+    public TowerController towerPrefab;
+    public int goldCost = 10;
 
     [Header("combat stats")]
     public float damage = 2f;
