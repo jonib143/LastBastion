@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a850f3b7cc1b0f742bfca47204f7dda0, type: 3}
+  m_Name: KnightCard
+  m_EditorClassIdentifier: Assembly-CSharp::TowerCardSO
+  cardName: Knight
+  description: 
+  cardArt: {fileID: -17014388705360972, guid: eaf0bd884357c654397bea6068bdce2c, type: 3}
+  towerData: {fileID: 11400000, guid: 73f020d27c4df8f4e9bd2074f439c936, type: 2}

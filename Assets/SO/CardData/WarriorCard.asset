@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a850f3b7cc1b0f742bfca47204f7dda0, type: 3}
   m_Name: WarriorCard
   m_EditorClassIdentifier: Assembly-CSharp::TowerCardSO
-  cardName: 
+  cardName: Warrior
   description: 
-  cardArt: {fileID: 0}
-  towerData: {fileID: 0}
+  cardArt: {fileID: -8496263891498080036, guid: f9b215dbc23711e41b8b407fe88914cc, type: 3}
+  towerData: {fileID: 11400000, guid: 7030c7f8b5d1266448bd020baee3a1dd, type: 2}

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1149234097c9de54f9ab566f48e3a03b, type: 3}
   m_Name: Cleave
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDataSO
-  prefab: {fileID: 0}
+  prefab: {fileID: 1470135064351973670, guid: 267e186f577168a4ab828e9bad56ec17, type: 3}
   speed: 8
   lifetime: 3
   isHoming: 0

@@ -18,6 +18,17 @@ public class CardStorageController : MonoBehaviour
         return slots[index];
     }
 
+    [SerializeField] private TowerCardSO[] startingCards;
+
+    void Start()
+    {
+        if (startingCards == null) return;
+        for (int i = 0; i < startingCards.Length; i++)
+        {
+            TryAddCard(startingCards[i]);
+        }
+    }
+
     public bool HasEmptySlot()
     {
         for (int i = 0; i < MaxSlots; i++)

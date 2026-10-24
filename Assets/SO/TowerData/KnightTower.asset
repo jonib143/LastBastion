@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: KnightTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
-  goldCost: 10
-  damage: 2
+  towerPrefab: {fileID: 9117977872116126721, guid: 132f12e9042d73a409b21c36778d0e42, type: 3}
+  goldCost: 60
+  damage: 6
   attackSpeed: 1
-  range: 5
-  attackPattern: {fileID: 0}
-  projectileData: {fileID: 0}
-  onHitEffects: []
+  range: 2
+  attackPattern: {fileID: 11400000, guid: d477195b5ef26eb44899b837c919b7a1, type: 2}
+  projectileData: {fileID: 11400000, guid: f2129caf71bb9c344bec6aee9d9c8564, type: 2}
+  onHitEffects:
+  - {fileID: 11400000, guid: ebcc83c5dbdaf834181e342ffa3aef9b, type: 2}

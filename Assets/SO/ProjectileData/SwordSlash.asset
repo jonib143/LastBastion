@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1149234097c9de54f9ab566f48e3a03b, type: 3}
   m_Name: SwordSlash
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDataSO
-  prefab: {fileID: 1972423978515226935, guid: a972a313f361fd44bacb0894e08ea2cf, type: 3}
+  prefab: {fileID: 683237416583028660, guid: 761e9e81d8acfda4090731ce448535a7, type: 3}
   speed: 10
   lifetime: 3
   isHoming: 0
