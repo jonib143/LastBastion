@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77e117569d347084cb34d43b8dc2498d, type: 3}
   m_Name: SkeletonWarrior
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
-  prefab: {fileID: 0}
+  prefab: {fileID: 1202484423408744685, guid: 9a1f6b85e2707f641bc14129d7363fe4, type: 3}
   maxHp: 20
   moveSpeed: 2
   goldDrop: 15
