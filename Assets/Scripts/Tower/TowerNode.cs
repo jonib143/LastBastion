@@ -6,6 +6,9 @@ public class TowerNode : MonoBehaviour
     public TowerController CurrentTower { get; private set; }
     public bool IsEmpty => CurrentTower == null;
 
+    private TowerController previewTower;
+    private TowerCardSO previewCard;
+
     public bool CanAcceptCard(TowerCardSO draggedCard, MergeDatabaseSO mergeDb)
     {
         if (draggedCard == null || draggedCard.towerData == null) return false;
@@ -14,36 +17,72 @@ public class TowerNode : MonoBehaviour
         return mergeDb != null && mergeDb.GetMergeResult(CurrentCard, draggedCard) != null;
     }
 
-    // for range preview
-    public TowerDataSO GetResultingTowerData(TowerCardSO draggedCard, MergeDatabaseSO mergeDb)
+    public void ShowPreview(TowerCardSO draggedCard, MergeDatabaseSO mergeDb)
     {
-        if (draggedCard == null) return null;
-        if (IsEmpty) return draggedCard.towerData;
+        if (!CanAcceptCard(draggedCard, mergeDb)) return;
 
-        if (mergeDb != null)
+        TowerCardSO cardToPreview = IsEmpty ? draggedCard : mergeDb.GetMergeResult(CurrentCard, draggedCard);
+        if (cardToPreview == null || cardToPreview.towerData == null || cardToPreview.towerData.towerPrefab == null) return;
+        
+        if (previewTower != null && previewCard == cardToPreview) return;
+
+        ClearPreview();
+
+        // hide existing tower while previewing its upgraded form
+        if (CurrentTower != null)
         {
-            TowerCardSO merged = mergeDb.GetMergeResult(CurrentCard, draggedCard);
-            if (merged != null) return merged.towerData;
+            CurrentTower.gameObject.SetActive(false);
         }
 
-        return null;
+        previewCard = cardToPreview;
+        previewTower = Instantiate(cardToPreview.towerData.towerPrefab, transform.position, Quaternion.identity);
+        
+        previewTower.enabled = false;
     }
 
-    public bool TryApplyCard(TowerCardSO draggedCard, MergeDatabaseSO mergeDb)
+    public void ClearPreview()
     {
-        if (!CanAcceptCard(draggedCard, mergeDb)) return false;
-
-        TowerCardSO cardToSpawn = draggedCard;
-
-        if (!IsEmpty)
+        if (previewTower != null)
         {
-            cardToSpawn = mergeDb.GetMergeResult(CurrentCard, draggedCard);
+            Destroy(previewTower.gameObject);
+            previewTower = null;
+            previewCard = null;
+        }
+
+        if (CurrentTower != null)
+        {
+            CurrentTower.gameObject.SetActive(true);
+        }
+    }
+
+    public bool TryConfirmDrop(TowerCardSO draggedCard, MergeDatabaseSO mergeDb)
+    {
+        if (!CanAcceptCard(draggedCard, mergeDb))
+        {
+            ClearPreview();
+            return false;
+        }
+
+        if (previewTower == null)
+        {
+            ShowPreview(draggedCard, mergeDb);
+        }
+
+        if (previewTower == null) return false;
+
+        if (CurrentTower != null)
+        {
             Destroy(CurrentTower.gameObject);
         }
 
-        CurrentCard = cardToSpawn;
-        CurrentTower = Instantiate(cardToSpawn.towerData.towerPrefab, transform.position, Quaternion.identity, transform);
-        CurrentTower.Initialize(cardToSpawn.towerData);
+        // make the preview tower permanent and turn its update loop on
+        CurrentCard = previewCard;
+        CurrentTower = previewTower;
+        CurrentTower.Initialize(CurrentCard.towerData);
+        CurrentTower.enabled = true;
+
+        previewTower = null;
+        previewCard = null;
         return true;
     }
 
