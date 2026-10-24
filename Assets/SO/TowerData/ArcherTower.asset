@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: ArcherTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
+  towerPrefab: {fileID: 7765812576515116340, guid: 151f024a491a11846ba2cc50e9aa2f00, type: 3}
   goldCost: 20
   damage: 1
   attackSpeed: 3

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: FireMageTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
+  towerPrefab: {fileID: 7765812576515116340, guid: 997f0e96bb544bb47a36b2fb880e4cb7, type: 3}
   goldCost: 80
   damage: 3
   attackSpeed: 4

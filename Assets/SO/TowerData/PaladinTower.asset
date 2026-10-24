@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: PaladinTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
+  towerPrefab: {fileID: 7765812576515116340, guid: aef7c9fff85d782418bb34f3b4278dbe, type: 3}
   goldCost: 120
   damage: 8
   attackSpeed: 4

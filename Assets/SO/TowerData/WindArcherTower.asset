@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: WindArcherTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
+  towerPrefab: {fileID: 7765812576515116340, guid: 569c4c52918927143a15d892d067989c, type: 3}
   goldCost: 10
   damage: 2
   attackSpeed: 5

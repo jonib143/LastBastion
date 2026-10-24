@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 675da511060226d4da40e43dafff5bfb, type: 3}
   m_Name: MageTower
   m_EditorClassIdentifier: Assembly-CSharp::TowerDataSO
-  towerPrefab: {fileID: 0}
+  towerPrefab: {fileID: 7765812576515116340, guid: a2ab06090b96c0942827bcd5e2bd0c0a, type: 3}
   goldCost: 40
   damage: 2
   attackSpeed: 1
