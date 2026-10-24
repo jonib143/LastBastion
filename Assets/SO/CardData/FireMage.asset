@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a850f3b7cc1b0f742bfca47204f7dda0, type: 3}
   m_Name: FireMage
   m_EditorClassIdentifier: Assembly-CSharp::TowerCardSO
-  cardName: IceMage
+  cardName: FireMage
   description: 
-  cardArt: {fileID: 3122235387903630064, guid: 4def90e6bcc6c11448f21ab1cf12c528, type: 3}
-  towerData: {fileID: 11400000, guid: 7e2160d228ffecf49a76d541c86d5361, type: 2}
+  cardArt: {fileID: -8322038764627718009, guid: 2f9afcb7990e3ee4086b18b49b08d8bd, type: 3}
+  towerData: {fileID: 11400000, guid: 77db404962293384e9b229a2bb4522b0, type: 2}

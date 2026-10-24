@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1149234097c9de54f9ab566f48e3a03b, type: 3}
   m_Name: Arrow
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileDataSO
-  prefab: {fileID: 0}
+  prefab: {fileID: 683237416583028660, guid: 647b56933b00a1643b2be892fcc6c9f2, type: 3}
   speed: 8
   lifetime: 3
   isHoming: 0

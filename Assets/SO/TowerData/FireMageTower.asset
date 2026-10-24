@@ -18,7 +18,7 @@ MonoBehaviour:
   attackSpeed: 4
   range: 4
   attackPattern: {fileID: 11400000, guid: 9697f0b1edd8859488ace773f09da79d, type: 2}
-  projectileData: {fileID: 0}
+  projectileData: {fileID: 11400000, guid: 2f89f32a3c2846f4493220af127996f0, type: 2}
   onHitEffects:
   - {fileID: 11400000, guid: ebcc83c5dbdaf834181e342ffa3aef9b, type: 2}
   - {fileID: 11400000, guid: 4550bac31968f894fb89ec2df23bd00b, type: 2}

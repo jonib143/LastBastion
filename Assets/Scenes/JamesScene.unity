@@ -485,7 +485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &344886706
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3722,9 +3722,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CardStorageController
   mergeDatabase: {fileID: 11400000, guid: 1b48eab00efa8654c975b1a442794f75, type: 2}
-  startingCards:
-  - {fileID: 11400000, guid: b12ceef2293c98b428fd24161f7ae7de, type: 2}
-  - {fileID: 11400000, guid: b12ceef2293c98b428fd24161f7ae7de, type: 2}
+  startingCards: []
 --- !u!4 &1774925723
 Transform:
   m_ObjectHideFlags: 0

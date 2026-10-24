@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
 {
-    public event Action<int, int> OnWaveStarted; // current wave (1-based), total waves
+    public event Action<int, int> OnWaveStarted;
     public event Action OnWaveCleared;
     public event Action OnAllWavesCleared;
 
@@ -21,11 +21,12 @@ public class WaveSpawner : MonoBehaviour
     private bool isSpawning = false;
     private bool waitingForWaveClear = false;
 
-    public int TotalWaves => waves.Count;
+    public int CurrentWave => currentWaveIndex;
+    public int TotalWaves => waves != null ? waves.Count : 0;
 
     public void StartNextWave()
     {
-        if (isSpawning || waitingForWaveClear || currentWaveIndex >= waves.Count) return;
+        if (waves == null || isSpawning || waitingForWaveClear || currentWaveIndex >= waves.Count) return;
 
         OnWaveStarted?.Invoke(currentWaveIndex + 1, waves.Count);
         StartCoroutine(SpawnWaveRoutine(waves[currentWaveIndex]));
@@ -36,23 +37,27 @@ public class WaveSpawner : MonoBehaviour
         isSpawning = true;
         waitingForWaveClear = true;
 
-        foreach (var group in wave.groups)
+        if (wave != null && wave.groups != null)
         {
-            if (group.enemyData == null) continue;
-
-            for (int i = 0; i < group.count; i++)
+            for (int g = 0; g < wave.groups.Count; g++)
             {
-                enemyFactory.Spawn(group.enemyData, path);
+                SpawnGroup group = wave.groups[g];
+                if (group.enemyData == null) continue;
 
-                if (group.spawnInterval > 0f)
+                for (int i = 0; i < group.count; i++)
                 {
-                    yield return new WaitForSeconds(group.spawnInterval);
-                }
-            }
+                    enemyFactory.Spawn(group.enemyData, path);
 
-            if (group.delayAfterGroup > 0f)
-            {
-                yield return new WaitForSeconds(group.delayAfterGroup);
+                    if (group.spawnInterval > 0f)
+                    {
+                        yield return new WaitForSeconds(group.spawnInterval);
+                    }
+                }
+
+                if (group.delayAfterGroup > 0f)
+                {
+                    yield return new WaitForSeconds(group.delayAfterGroup);
+                }
             }
         }
 
