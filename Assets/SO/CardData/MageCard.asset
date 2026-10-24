@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a850f3b7cc1b0f742bfca47204f7dda0, type: 3}
+  m_Name: MageCard
+  m_EditorClassIdentifier: Assembly-CSharp::TowerCardSO
+  cardName: Mage
+  description: 
+  cardArt: {fileID: 7728126029539812062, guid: aead0c5cd28905c4c97f5b39a208df6d, type: 3}
+  towerData: {fileID: 11400000, guid: e759566320f69c84489764d6f8995908, type: 2}

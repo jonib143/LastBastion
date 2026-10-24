@@ -3,6 +3,11 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    public event Action<float, float> OnHealthChanged;
+
+    public float CurrentHp => currentHp;
+    public float MaxHp => maxHp;
+
     private float currentHp;
     private float maxHp;
     private Action onDeath;
@@ -18,6 +23,8 @@ public class EnemyHealth : MonoBehaviour
         currentHp = maxHp;
         onDeath = deathCallback;
         dotTimer = 0f;
+
+        OnHealthChanged?.Invoke(currentHp, maxHp);
     }
 
     void Update()
@@ -38,7 +45,9 @@ public class EnemyHealth : MonoBehaviour
     {
         if (currentHp <= 0f) return;
 
-        currentHp -= amount;
+        currentHp = Mathf.Max(0f, currentHp - amount);
+        OnHealthChanged?.Invoke(currentHp, maxHp);
+
         if (currentHp <= 0f)
         {
             onDeath?.Invoke();

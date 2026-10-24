@@ -5,6 +5,8 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     public static event Action<int> OnEnemyKilled;
+    public static event Action<Vector3, int> OnEnemyKilledAtPosition;
+    public static event Action<float> OnEnemyReachedEnd;
 
     [Header("waddle animation")]
     [SerializeField] private Transform visualTransform;
@@ -75,7 +77,8 @@ public class EnemyController : MonoBehaviour
 
         float stepDistance = Data.moveSpeed * speedFactor * Time.deltaTime;
         float tangentMag = path.GetTangent(PathProgress).magnitude;
-        
+
+        // divide by tangent magnitude so speed stays constant through tight curves
         if (tangentMag > 0.0001f)
         {
             PathProgress += stepDistance / tangentMag;
@@ -83,7 +86,8 @@ public class EnemyController : MonoBehaviour
 
         PathProgress = Mathf.Clamp01(PathProgress);
         transform.position = path.GetPosition(PathProgress);
-        
+
+        // tilt only the child sprite so the hp bar stays flat
         if (visualTransform != null)
         {
             swayTimer += Time.deltaTime * speedFactor * swaySpeed;
@@ -93,9 +97,7 @@ public class EnemyController : MonoBehaviour
 
         if (PathProgress >= 1f)
         {
-            //var hpBar = FindFirstObjectByType<PlayerHPBar>();
-            //if (hpBar != null) hpBar.TakeDamage(1f);
-
+            OnEnemyReachedEnd?.Invoke(Data != null ? Data.playerDamage : 1f);
             Despawn();
         }
     }
@@ -121,6 +123,7 @@ public class EnemyController : MonoBehaviour
     {
         if (!isRunning) return;
         OnEnemyKilled?.Invoke(Data.goldDrop);
+        OnEnemyKilledAtPosition?.Invoke(transform.position, Data.goldDrop);
         Despawn();
     }
 

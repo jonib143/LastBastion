@@ -23,8 +23,6 @@ public class GoldManager : MonoBehaviour
 
     void OnEnable()
     {
-        EnemyController.OnEnemyKilled += AddGold;
-
         if (placementController != null)
         {
             placementController.OnTowerSold += AddGold;
@@ -33,8 +31,6 @@ public class GoldManager : MonoBehaviour
 
     void OnDisable()
     {
-        EnemyController.OnEnemyKilled -= AddGold;
-
         if (placementController != null)
         {
             placementController.OnTowerSold -= AddGold;
