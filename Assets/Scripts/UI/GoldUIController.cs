@@ -25,7 +25,6 @@ public class GoldUIController : MonoBehaviour
 
     void Start()
     {
-        // fallback if gold manager awake ran after this component enabled
         if (goldManager == null && GoldManager.Instance != null)
         {
             goldManager = GoldManager.Instance;
@@ -50,7 +49,7 @@ public class GoldUIController : MonoBehaviour
     {
         if (goldText != null)
         {
-            goldText.text = $"Gold: {currentGold}";
+            goldText.text = $"{currentGold}g";
         }
     }
 }

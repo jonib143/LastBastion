@@ -4,33 +4,33 @@ using UnityEngine;
 
 public class CardDraftController : MonoBehaviour
 {
-    public const int DraftCardCount = 3;
+    public const int DraftSlotCount = 3;
 
     public event Action OnDraftOpened;
-    public event Action OnDraftStateChanged;
+    public event Action OnDraftUpdated;
     public event Action OnDraftClosed;
 
     [Header("references")]
     [SerializeField] private WaveSpawner waveSpawner;
     [SerializeField] private CardStorageController storageController;
 
-    [Header("draft config")]
+    [Header("draft pool")]
     [SerializeField] private List<TowerCardSO> draftPool;
-    [SerializeField] private int baseRefreshCost = 10;
+
+    [Header("refresh cost config")]
+    [SerializeField] private int baseRefreshCost = 5;
     [SerializeField] private int refreshCostStep = 5;
 
-    private readonly TowerCardSO[] currentChoices = new TowerCardSO[DraftCardCount];
-    private readonly bool[] purchasedSlots = new bool[DraftCardCount];
+    private readonly TowerCardSO[] currentOffers = new TowerCardSO[DraftSlotCount];
+    private int currentRefreshCount = 0;
 
-    public bool IsDraftOpen { get; private set; }
-    public int CurrentRefreshCost { get; private set; }
+    public int CurrentRefreshCost => baseRefreshCost + (currentRefreshCount * refreshCostStep);
 
     void OnEnable()
     {
         if (waveSpawner != null)
         {
-            waveSpawner.OnWaveCleared += OpenNewDraft;
-            waveSpawner.OnWaveStarted += HandleWaveStarted;
+            waveSpawner.OnWaveCleared += OpenNewDraftSession;
         }
     }
 
@@ -38,124 +38,73 @@ public class CardDraftController : MonoBehaviour
     {
         if (waveSpawner != null)
         {
-            waveSpawner.OnWaveCleared -= OpenNewDraft;
-            waveSpawner.OnWaveStarted -= HandleWaveStarted;
+            waveSpawner.OnWaveCleared -= OpenNewDraftSession;
         }
     }
 
     void Start()
     {
-        // open initial draft before wave 1 starts
-        OpenNewDraft();
+        // open draft before wave 1 starts
+        OpenNewDraftSession();
     }
 
-    public TowerCardSO GetCardChoice(int slotIndex)
+    public void OpenNewDraftSession()
     {
-        if (slotIndex < 0 || slotIndex >= DraftCardCount) return null;
-        return currentChoices[slotIndex];
-    }
-
-    public bool IsSlotPurchased(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= DraftCardCount) return true;
-        return purchasedSlots[slotIndex];
-    }
-
-    public bool CanBuyCard(int slotIndex)
-    {
-        if (!IsDraftOpen) return false;
-        if (slotIndex < 0 || slotIndex >= DraftCardCount) return false;
-        if (purchasedSlots[slotIndex]) return false;
-
-        TowerCardSO card = currentChoices[slotIndex];
-        if (card == null) return false;
-        if (storageController == null || !storageController.HasEmptySlot()) return false;
-        if (GoldManager.Instance == null || !GoldManager.Instance.CanAfford(card.GoldCost)) return false;
-
-        return true;
-    }
-
-    public bool CanRefreshDraft()
-    {
-        if (!IsDraftOpen) return false;
-        if (draftPool == null || draftPool.Count == 0) return false;
-        if (GoldManager.Instance == null || !GoldManager.Instance.CanAfford(CurrentRefreshCost)) return false;
-
-        return true;
-    }
-
-    public void OpenNewDraft()
-    {
-        CurrentRefreshCost = baseRefreshCost;
-        IsDraftOpen = true;
-
-        RollDraftCards();
-
+        // reset escalating refresh cost for the new wave
+        currentRefreshCount = 0;
+        RollCards();
         OnDraftOpened?.Invoke();
-        OnDraftStateChanged?.Invoke();
+        OnDraftUpdated?.Invoke();
+    }
+
+    public TowerCardSO GetOffer(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= DraftSlotCount) return null;
+        return currentOffers[slotIndex];
     }
 
     public bool TryBuyCard(int slotIndex)
     {
-        if (!CanBuyCard(slotIndex)) return false;
+        if (slotIndex < 0 || slotIndex >= DraftSlotCount) return false;
 
-        TowerCardSO card = currentChoices[slotIndex];
+        TowerCardSO card = currentOffers[slotIndex];
+        if (card == null || storageController == null || GoldManager.Instance == null) return false;
+
+        if (!storageController.HasEmptySlot()) return false;
         if (!GoldManager.Instance.TrySpendGold(card.GoldCost)) return false;
 
-        if (!storageController.TryAddCard(card))
-        {
-            // refund gold if storage failed unexpectedly
-            GoldManager.Instance.AddGold(card.GoldCost);
-            return false;
-        }
-
-        purchasedSlots[slotIndex] = true;
-        OnDraftStateChanged?.Invoke();
+        storageController.TryAddCard(card);
+        currentOffers[slotIndex] = null; // mark slot as bought
+        OnDraftUpdated?.Invoke();
         return true;
     }
 
     public bool TryRefreshDraft()
     {
-        if (!CanRefreshDraft()) return false;
-        if (!GoldManager.Instance.TrySpendGold(CurrentRefreshCost)) return false;
+        if (GoldManager.Instance == null) return false;
 
-        CurrentRefreshCost += refreshCostStep;
-        RollDraftCards();
+        int cost = CurrentRefreshCost;
+        if (!GoldManager.Instance.TrySpendGold(cost)) return false;
 
-        OnDraftStateChanged?.Invoke();
+        currentRefreshCount++;
+        RollCards();
+        OnDraftUpdated?.Invoke();
         return true;
     }
 
     public void CloseDraft()
     {
-        if (!IsDraftOpen) return;
-
-        IsDraftOpen = false;
         OnDraftClosed?.Invoke();
     }
 
-    private void RollDraftCards()
+    private void RollCards()
     {
-        bool hasCards = draftPool != null && draftPool.Count > 0;
+        if (draftPool == null || draftPool.Count == 0) return;
 
-        for (int i = 0; i < DraftCardCount; i++)
+        for (int i = 0; i < DraftSlotCount; i++)
         {
-            purchasedSlots[i] = false;
-
-            if (hasCards)
-            {
-                int randomIndex = UnityEngine.Random.Range(0, draftPool.Count);
-                currentChoices[i] = draftPool[randomIndex];
-            }
-            else
-            {
-                currentChoices[i] = null;
-            }
+            int randomIndex = UnityEngine.Random.Range(0, draftPool.Count);
+            currentOffers[i] = draftPool[randomIndex];
         }
-    }
-
-    private void HandleWaveStarted(int currentWave, int totalWaves)
-    {
-        CloseDraft();
     }
 }

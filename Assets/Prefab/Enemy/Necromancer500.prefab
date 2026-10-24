@@ -118,3 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 926f01829eb75b348896fec30733d3ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyController
+  visualTransform: {fileID: 1539170768126088015}
+  swaySpeed: 12
+  swayAngle: 10

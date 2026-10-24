@@ -6,16 +6,20 @@ public class EnemyController : MonoBehaviour
 {
     public static event Action<int> OnEnemyKilled;
 
+    [Header("waddle animation")]
+    [SerializeField] private Transform visualTransform;
+    [SerializeField] private float swaySpeed = 12f;
+    [SerializeField] private float swayAngle = 10f;
+
     public EnemyDataSO Data { get; private set; }
     public EnemyHealth Health { get; private set; }
     public float PathProgress { get; private set; }
 
     private CubicPath path;
-    private float duration;
-    private float elapsed;
     private float stunTimer;
     private float slowTimer;
     private float slowMultiplier;
+    private float swayTimer;
     private Action<EnemyController> returnToPool;
     private bool isRunning;
 
@@ -29,16 +33,24 @@ public class EnemyController : MonoBehaviour
         Data = data;
         path = assignedPath;
 
-        float pathLength = path.GetLength();
-        duration = data.moveSpeed > 0f ? pathLength / data.moveSpeed : 1f;
-
-        elapsed = 0f;
         PathProgress = 0f;
         stunTimer = 0f;
         slowTimer = 0f;
         slowMultiplier = 0f;
+        swayTimer = 0f;
         returnToPool = onDespawn;
         isRunning = true;
+
+        transform.rotation = Quaternion.identity;
+        if (visualTransform != null)
+        {
+            visualTransform.localRotation = Quaternion.identity;
+        }
+
+        if (path != null && path.IsValid())
+        {
+            transform.position = path.GetPosition(0f);
+        }
 
         Health.Initialize(data.maxHp, HandleKilled);
         gameObject.SetActive(true);
@@ -61,16 +73,22 @@ public class EnemyController : MonoBehaviour
             speedFactor = 1f - slowMultiplier;
         }
 
-        // scale delta time instead of changing duration so enemy doesn't jump along the curve
-        elapsed += Time.deltaTime * speedFactor;
-        PathProgress = Mathf.Clamp01(elapsed / duration);
-
-        transform.position = path.GetPosition(PathProgress);
-
-        Vector3 dir = path.GetTangent(PathProgress);
-        if (dir != Vector3.zero)
+        float stepDistance = Data.moveSpeed * speedFactor * Time.deltaTime;
+        float tangentMag = path.GetTangent(PathProgress).magnitude;
+        
+        if (tangentMag > 0.0001f)
         {
-            transform.up = dir;
+            PathProgress += stepDistance / tangentMag;
+        }
+
+        PathProgress = Mathf.Clamp01(PathProgress);
+        transform.position = path.GetPosition(PathProgress);
+        
+        if (visualTransform != null)
+        {
+            swayTimer += Time.deltaTime * speedFactor * swaySpeed;
+            float angle = Mathf.Sin(swayTimer) * swayAngle;
+            visualTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
 
         if (PathProgress >= 1f)

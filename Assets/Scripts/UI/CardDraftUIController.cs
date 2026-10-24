@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using TMPro;
 
@@ -9,66 +8,36 @@ public class CardDraftUIController : MonoBehaviour
     [Serializable]
     public struct DraftCardSlotUI
     {
-        public Image cardArtImage;
+        public GameObject rootObject;
+        public Image artImage;
         public TMP_Text nameText;
         public TMP_Text descriptionText;
         public TMP_Text costText;
+        public TMP_Text damageText;
+        public TMP_Text attackSpeedText;
+        public TMP_Text rangeText;
         public Button buyButton;
     }
 
     [Header("controllers")]
     [SerializeField] private CardDraftController draftController;
     [SerializeField] private CardStorageController storageController;
-    [SerializeField] private GoldManager goldManager;
 
     [Header("ui elements")]
     [SerializeField] private GameObject draftPanel;
-    [SerializeField] private DraftCardSlotUI[] cardSlots = new DraftCardSlotUI[CardDraftController.DraftCardCount];
+    [SerializeField] private DraftCardSlotUI[] cardSlots = new DraftCardSlotUI[CardDraftController.DraftSlotCount];
     [SerializeField] private Button refreshButton;
     [SerializeField] private TMP_Text refreshCostText;
     [SerializeField] private Button closeButton;
 
-    private UnityAction[] buyButtonActions;
-
     void Awake()
     {
-        buyButtonActions = new UnityAction[cardSlots.Length];
         for (int i = 0; i < cardSlots.Length; i++)
         {
-            int slotIndex = i;
-            buyButtonActions[i] = () => OnBuyClicked(slotIndex);
-        }
-    }
-
-    void OnEnable()
-    {
-        if (goldManager == null)
-        {
-            goldManager = GoldManager.Instance;
-        }
-
-        if (draftController != null)
-        {
-            draftController.OnDraftOpened += HandleDraftOpened;
-            draftController.OnDraftStateChanged += RefreshUI;
-            draftController.OnDraftClosed += HandleDraftClosed;
-        }
-
-        if (storageController != null)
-        {
-            storageController.OnStorageUpdated += RefreshUI;
-        }
-
-        if (goldManager != null)
-        {
-            goldManager.OnGoldChanged += HandleGoldChanged;
-        }
-
-        for (int i = 0; i < cardSlots.Length; i++)
-        {
-            if (cardSlots[i].buyButton != null && i < buyButtonActions.Length)
+            int index = i; 
+            if (cardSlots[i].buyButton != null)
             {
-                cardSlots[i].buyButton.onClick.AddListener(buyButtonActions[i]);
+                cardSlots[i].buyButton.onClick.AddListener(() => OnBuyClicked(index));
             }
         }
 
@@ -83,35 +52,44 @@ public class CardDraftUIController : MonoBehaviour
         }
     }
 
-    void Start()
+    void OnEnable()
     {
-        if (goldManager == null && GoldManager.Instance != null)
-        {
-            goldManager = GoldManager.Instance;
-            goldManager.OnGoldChanged += HandleGoldChanged;
-        }
-
         if (draftController != null)
         {
-            if (draftPanel != null)
-            {
-                draftPanel.SetActive(draftController.IsDraftOpen);
-            }
-
-            if (draftController.IsDraftOpen)
-            {
-                RefreshUI();
-            }
+            draftController.OnDraftOpened += ShowPanel;
+            draftController.OnDraftUpdated += RefreshUI;
+            draftController.OnDraftClosed += HidePanel;
         }
+
+        if (storageController != null)
+        {
+            storageController.OnStorageUpdated += RefreshUI;
+        }
+
+        if (GoldManager.Instance != null)
+        {
+            GoldManager.Instance.OnGoldChanged += HandleGoldChanged;
+        }
+    }
+
+    void Start()
+    {
+        if (GoldManager.Instance != null)
+        {
+            GoldManager.Instance.OnGoldChanged -= HandleGoldChanged;
+            GoldManager.Instance.OnGoldChanged += HandleGoldChanged;
+        }
+
+        RefreshUI();
     }
 
     void OnDisable()
     {
         if (draftController != null)
         {
-            draftController.OnDraftOpened -= HandleDraftOpened;
-            draftController.OnDraftStateChanged -= RefreshUI;
-            draftController.OnDraftClosed -= HandleDraftClosed;
+            draftController.OnDraftOpened -= ShowPanel;
+            draftController.OnDraftUpdated -= RefreshUI;
+            draftController.OnDraftClosed -= HidePanel;
         }
 
         if (storageController != null)
@@ -119,51 +97,10 @@ public class CardDraftUIController : MonoBehaviour
             storageController.OnStorageUpdated -= RefreshUI;
         }
 
-        if (goldManager != null)
+        if (GoldManager.Instance != null)
         {
-            goldManager.OnGoldChanged -= HandleGoldChanged;
+            GoldManager.Instance.OnGoldChanged -= HandleGoldChanged;
         }
-
-        for (int i = 0; i < cardSlots.Length; i++)
-        {
-            if (cardSlots[i].buyButton != null && i < buyButtonActions.Length)
-            {
-                cardSlots[i].buyButton.onClick.RemoveListener(buyButtonActions[i]);
-            }
-        }
-
-        if (refreshButton != null)
-        {
-            refreshButton.onClick.RemoveListener(OnRefreshClicked);
-        }
-
-        if (closeButton != null)
-        {
-            closeButton.onClick.RemoveListener(OnCloseClicked);
-        }
-    }
-
-    private void HandleDraftOpened()
-    {
-        if (draftPanel != null)
-        {
-            draftPanel.SetActive(true);
-        }
-
-        RefreshUI();
-    }
-
-    private void HandleDraftClosed()
-    {
-        if (draftPanel != null)
-        {
-            draftPanel.SetActive(false);
-        }
-    }
-
-    private void HandleGoldChanged(int currentGold)
-    {
-        RefreshUI();
     }
 
     private void OnBuyClicked(int slotIndex)
@@ -190,55 +127,64 @@ public class CardDraftUIController : MonoBehaviour
         }
     }
 
+    private void HandleGoldChanged(int _)
+    {
+        RefreshUI();
+    }
+
+    private void ShowPanel()
+    {
+        if (draftPanel != null)
+        {
+            draftPanel.SetActive(true);
+        }
+        RefreshUI();
+    }
+
+    private void HidePanel()
+    {
+        if (draftPanel != null)
+        {
+            draftPanel.SetActive(false);
+        }
+    }
+
     private void RefreshUI()
     {
-        if (draftController == null || !draftController.IsDraftOpen) return;
+        if (draftController == null) return;
 
-        for (int i = 0; i < cardSlots.Length; i++)
+        bool hasSpace = storageController != null && storageController.HasEmptySlot();
+
+        for (int i = 0; i < CardDraftController.DraftSlotCount; i++)
         {
-            DraftCardSlotUI slotUI = cardSlots[i];
-            TowerCardSO card = draftController.GetCardChoice(i);
-            bool isPurchased = draftController.IsSlotPurchased(i);
+            if (i >= cardSlots.Length) break;
 
-            if (card != null)
+            TowerCardSO card = draftController.GetOffer(i);
+            var slot = cardSlots[i];
+
+            if (card == null)
             {
-                if (slotUI.cardArtImage != null)
-                {
-                    slotUI.cardArtImage.sprite = card.cardArt;
-                    slotUI.cardArtImage.enabled = card.cardArt != null;
-                }
-
-                if (slotUI.nameText != null)
-                {
-                    slotUI.nameText.text = card.cardName;
-                }
-
-                if (slotUI.descriptionText != null)
-                {
-                    slotUI.descriptionText.text = card.description;
-                }
-
-                if (slotUI.costText != null)
-                {
-                    slotUI.costText.text = isPurchased ? "Bought" : $"{card.GoldCost}g";
-                }
-            }
-            else
-            {
-                if (slotUI.cardArtImage != null)
-                {
-                    slotUI.cardArtImage.sprite = null;
-                    slotUI.cardArtImage.enabled = false;
-                }
-
-                if (slotUI.nameText != null) slotUI.nameText.text = string.Empty;
-                if (slotUI.descriptionText != null) slotUI.descriptionText.text = string.Empty;
-                if (slotUI.costText != null) slotUI.costText.text = string.Empty;
+                if (slot.rootObject != null) slot.rootObject.SetActive(false);
+                continue;
             }
 
-            if (slotUI.buyButton != null)
+            if (slot.rootObject != null) slot.rootObject.SetActive(true);
+            if (slot.artImage != null) slot.artImage.sprite = card.cardArt;
+            if (slot.nameText != null) slot.nameText.text = card.cardName;
+            if (slot.descriptionText != null) slot.descriptionText.text = card.description;
+            if (slot.costText != null) slot.costText.text = $"{card.GoldCost}g";
+
+            if (card.towerData != null)
             {
-                slotUI.buyButton.interactable = draftController.CanBuyCard(i);
+                if (slot.damageText != null) slot.damageText.text = $"{card.towerData.damage}";
+                if (slot.attackSpeedText != null) slot.attackSpeedText.text = $"{card.towerData.attackSpeed}/s";
+                if (slot.rangeText != null) slot.rangeText.text = $"{card.towerData.range}";
+            }
+
+            if (slot.buyButton != null)
+            {
+                bool canAfford = GoldManager.Instance != null && GoldManager.Instance.CanAfford(card.GoldCost);
+                slot.buyButton.interactable = hasSpace && canAfford;
             }
         }
 
@@ -249,7 +195,8 @@ public class CardDraftUIController : MonoBehaviour
 
         if (refreshButton != null)
         {
-            refreshButton.interactable = draftController.CanRefreshDraft();
+            bool canAffordRefresh = GoldManager.Instance != null && GoldManager.Instance.CanAfford(draftController.CurrentRefreshCost);
+            refreshButton.interactable = canAffordRefresh;
         }
     }
 }

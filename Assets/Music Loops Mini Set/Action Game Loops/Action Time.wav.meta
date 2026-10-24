@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: 0f8db5c497f1ac84796a25972885cf03
+guid: bebc83db02f0d5e4b963a0da22df8502
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
   defaultSettings:
     serializedVersion: 2
-    loadType: 1
+    loadType: 0
     sampleRateSetting: 0
-    sampleRateOverride: 0
-    compressionFormat: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,10 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 70967
-  packageName: Music Loops Mini Set
-  packageVersion: 2.0
-  assetPath: Assets/Music Loops Mini Set/Action Game Loops/Action Time.wav
-  uploadId: 325150

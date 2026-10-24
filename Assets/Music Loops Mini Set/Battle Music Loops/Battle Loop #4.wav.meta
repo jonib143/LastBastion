@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: bcbc346bb12ee5546aea434f6ccbb78f
+guid: 1c03922856551204aa1248536b0c504e
 AudioImporter:
   externalObjects: {}
   serializedVersion: 8
   defaultSettings:
     serializedVersion: 2
-    loadType: 1
+    loadType: 0
     sampleRateSetting: 0
-    sampleRateOverride: 0
-    compressionFormat: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
     quality: 1
     conversionMode: 0
     preloadAudioData: 0
@@ -21,10 +21,3 @@ AudioImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 70967
-  packageName: Music Loops Mini Set
-  packageVersion: 2.0
-  assetPath: Assets/Music Loops Mini Set/Battle Music Loops/Battle Loop #4.wav
-  uploadId: 325150
