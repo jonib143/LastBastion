@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77e117569d347084cb34d43b8dc2498d, type: 3}
   m_Name: Necromancer
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDataSO
-  prefab: {fileID: 8602658539746616485, guid: aa04377ef1cee184db035154d2d21c8b, type: 3}
+  prefab: {fileID: 7192014791107588987, guid: bb7ba7f3a5235bf4c83c40eda9d3e6fc, type: 3}
   maxHp: 40
   moveSpeed: 1
   goldDrop: 15

@@ -16,7 +16,7 @@ MonoBehaviour:
   goldCost: 30
   damage: 3
   attackSpeed: 2
-  range: 1
+  range: 1.5
   attackPattern: {fileID: 11400000, guid: 9697f0b1edd8859488ace773f09da79d, type: 2}
   projectileData: {fileID: 11400000, guid: 8afc5f61c24152d42818d796133e7944, type: 2}
   onHitEffects:
